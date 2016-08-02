@@ -1,5 +1,3 @@
-Grocery CRUD
+Proyecto Sarmiento
 =============
-Grocery CRUD is a PHP and Codeigniter Framework library that creates a full functional CRUD system without the need to customise JavaScript or CSS.
-
-For more information, visit http://www.grocerycrud.com
+Un proyecto que te cambiara la vida, paz en el mundo y felicidad a los peronistas de corazon
