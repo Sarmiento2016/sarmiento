@@ -9,6 +9,7 @@ $id_cliente	= $_POST['cliente'];
 $tipo		= $_POST['tipo'];
 $estado		= $_POST['estado'];
 $dto		= $_POST['desc'];
+$id_vendedor   = $_POST['vendedor'];
 
 $codigos_a_cargar	= $_POST['codigos_art'];
 $cant_a_cargar		= $_POST['cantidades'];
@@ -17,7 +18,7 @@ $precios_a_cargar	= $_POST['precios'];
 
 //CARGO PRESUPUESTO 
 
-$qstring = "INSERT INTO presupuesto (fecha,monto,id_cliente,tipo,estado,descuento) VALUES('$fecha',$monto,$id_cliente,$tipo,$estado,$dto)";
+$qstring = "INSERT INTO presupuesto (fecha,monto,id_cliente,tipo,estado,descuento, id_vendedor) VALUES('$fecha',$monto,$id_cliente,$tipo,$estado,$dto, $id_vendedor)";
 $result = mysql_query($qstring) or die(mysql_error());//query the database for entries containing the term
 
 //CARGO PRESUPUESTO 

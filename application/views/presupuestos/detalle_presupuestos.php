@@ -28,19 +28,33 @@
 					foreach ($impresiones as $impresion) 
 	  				{
 	  					$clientes	= $this->clientes_model->getRegistro($row->id_cliente);
-		  				if($clientes)
+                        if($clientes)
 						{
 							foreach ($clientes as $row_cliente)
 							{
 								$nombre = $row_cliente->nombre;
 								$apellido = $row_cliente->apellido;
 							}
-						}	
+						}
+                        
+                        $_vendedor   = $this->vendedores_model->getRegistro($row->id_vendedor);
+                        if($_vendedor)
+                        {
+                            foreach ($_vendedor as $row_vendedor)
+                            {
+                                $vendedor = $row_vendedor->vendedor;
+                            }
+                        }else{
+                           $vendedor = ""; 
+                        }
+                        
+                        	
 						$cabecera = $impresion->cabecera;
 						$cabecera = str_replace("#presupuesto_nro#", $row->id_presupuesto, $cabecera);
 						$cabecera = str_replace("#presupuesto_descuento#", $row->descuento, $cabecera);
 						$cabecera = str_replace("#presupuesto_fecha#", date('d-m-Y', strtotime($row->fecha)), $cabecera);
 						$cabecera = str_replace("#presupuesto_monto#", $row->monto, $cabecera);
+                        $cabecera = str_replace("#vendedor#", $vendedor, $cabecera);
 						if(isset($nombre))
 						{
 							$cabecera = str_replace("#cliente_nombre#", $nombre, $cabecera);

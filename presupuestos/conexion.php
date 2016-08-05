@@ -2,7 +2,7 @@
 $db['hostname'] = 'localhost';
 $db['username'] = 'root';
 $db['password'] = '';
-$db['database'] = 'sarmiento-nuevo';
+$db['database'] = 'sarmiento';
 
 $link = mysql_connect($db['hostname'], $db['username'], $db['password'])
 or die('No se pudo conectar: ' . mysql_error());;

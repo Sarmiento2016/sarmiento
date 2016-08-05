@@ -172,6 +172,7 @@ function fin_presupuesto(){
 	acliente=$("#id_cliente").val();
 	atipo=$("input[name='tipo']:checked").val(); 
 	dto=parseFloat($('#descuento').val());
+	vendedor=$('#vendedor').val();
 	
 	if(atipo==1) { // contado
 	
@@ -189,7 +190,7 @@ function fin_presupuesto(){
 	 $.ajax({
       url : 'carga_presupuesto.php',
       type: 'POST',
-      data : {total:atotal,cliente:acliente,tipo:atipo,estado:aestado,codigos_art:codigo_r,cantidades:cantidad_r,precios:precio_r,desc:dto}
+      data : {total:atotal,cliente:acliente,tipo:atipo,estado:aestado,codigos_art:codigo_r,cantidades:cantidad_r,precios:precio_r,desc:dto, vendedor:vendedor}
     }).done( function( data )
              {
                 // console.log(data);

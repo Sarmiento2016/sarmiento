@@ -22,6 +22,7 @@ class Ventas extends My_Controller {
 		$this->load->model('config_impresion_model');
 		$this->load->model('anulaciones_model');
 		$this->load->model('intereses_model');
+        $this->load->model('vendedores_model');
 		
 		
 		$this->load->helper('url');
@@ -269,5 +270,44 @@ class Ventas extends My_Controller {
 			redirect('/','refresh');
 		}
 	}
+
+
+
+ /**********************************************************************************
+ **********************************************************************************
+ * 
+ *              CRUD Vendedores
+ * 
+ * ********************************************************************************
+ **********************************************************************************/
+
+    
+    public function vendedores_abm()
+    {
+        $crud = new grocery_CRUD();
+
+        $crud->set_table('vendedor');
+             
+        $crud->columns('id_vendedor','vendedor', 'id_estado');
+            
+        $crud->display_as('id_vendedor','ID')
+             ->display_as('vendedor','Vendedor')
+             ->display_as('id_estado','Estado');
+             
+        $crud->set_subject('vendedor');
+        
+        $crud->fields('vendedor');
+        
+        $crud->required_fields('vendedor','vendedor');
+         
+        $crud->set_relation('id_estado','estado','estado');
+            
+        $_COOKIE['tabla']='vendedor';
+        $_COOKIE['id']='id_vendedor'; 
+            
+        $output = $crud->render();
+
+        $this->_example_output($output);
+    }
 
 }
