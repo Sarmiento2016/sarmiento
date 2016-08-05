@@ -25,8 +25,6 @@
 				echo "<table class='table table-hover'>";
 				foreach ($presupuestos as $row) 
 				{
-					
-					
 					foreach ($impresiones as $impresion) 
 	  				{
 	  					$clientes	= $this->clientes_model->getRegistro($row->id_cliente);
@@ -82,18 +80,36 @@
 				
 				if($detalle_presupuesto)
 				{
-				foreach ($detalle_presupuesto as $row_detalle) {
-					echo "<tr>";	
-						echo "<td><a title='ver Articulo' class='btn btn-default btn-xs' href='".base_url()."index.php/articulos/articulo_abm/read/".$row_detalle->id_articulo."'>".$row_detalle->cod_proveedor."</a></td>";
-						echo "<td>".$row_detalle->descripcion."</td>";
-						echo "<td>".$row_detalle->cantidad."</td>";
-						$precio = $row_detalle->precio/$row_detalle->cantidad;
-						echo "<td>".$precio."</td>";
-						$sub_total = $row_detalle->cantidad * $precio;
-						$total = $total + $sub_total;
-						echo "<td>$ ".round($sub_total,2)."</td>";
-					echo "</tr>";
+					foreach ($detalle_presupuesto as $row_detalle) {
+						echo "<tr>";	
+							echo "<td><a title='ver Articulo' class='btn btn-default btn-xs' href='".base_url()."index.php/articulos/articulo_abm/read/".$row_detalle->id_articulo."'>".$row_detalle->cod_proveedor."</a></td>";
+							echo "<td>".$row_detalle->descripcion."</td>";
+							echo "<td>".$row_detalle->cantidad."</td>";
+							if($row_detalle->cantidad > 0){
+								$precio = $row_detalle->precio/$row_detalle->cantidad;
+							} else {
+								$precio = 0;
+							}
+							echo "<td>".$precio."</td>";
+							$sub_total = $row_detalle->cantidad * $precio;
+							$total = $total + $sub_total;
+							echo "<td>$ ".round($sub_total,2)."</td>";
+						echo "</tr>";
+					}
 				}
+				
+				if($interes_presupuesto)
+				{
+					foreach ($interes_presupuesto as $row_interes) {
+						echo "<tr>";	
+							echo "<td>-</td>";
+							echo "<td>".$row_interes->descripcion."</td>";
+							echo "<td>-</td>";
+							echo "<td>-</td>";
+							$total = $total + $row_interes->monto;
+							echo "<td>".$row_interes->monto."</td>";
+						echo "</tr>";
+					}
 				}
 				
 				echo "<tr class='success'>";	
@@ -130,32 +146,32 @@
 	  				<i class="fa fa-print"></i> Imprimir
 	  			</button>
 	  			<?php 
-	  			if($row->tipo == 2)
-	  			{
+	  			
+	  			// Presupuesto pendiente de pago
+	  			if($row->tipo == 2){
 	  			?>
 	  			<a href="<?php echo base_url().'index.php/devoluciones/generar/'.$id_presupuesto?>" class="btn btn-default"/>
 	  				<i class="fa fa-thumbs-down"></i> Devolución
 	  			</a>
+	  			
+	  			<a href="<?php echo base_url().'index.php/ventas/interes/'.$id_presupuesto?>" class="btn btn-default" data-toggle="modal" data-target="#interesModal"/>
+	  				<i class="fa fa-angle-up"></i> Interes
+	  			</a>
 	  			<?php
 	  			}
-				?>
-	  			<?php 
-	  			if($row->tipo == 1)
-	  			{
+
+				// Presupuesto pagado
+	  			if($row->tipo == 1) {
 	  			?>
 	  				<a href="<?php echo base_url().'index.php/presupuestos/anular/'.$id_presupuesto?>" class="btn btn-default"/>
 	  					<i class="fa fa-trash-o"></i> Anular
 	  				</a>
 	  			<?php
 	  			}
-			}
-			else
-			{
-				if($anulaciones)
-				{
-					foreach ($anulaciones as $row_a) 
-					{
-						$mensaje = "Nota de la anulación: ".$row_a->nota."<br>";
+			} else {
+				if($anulaciones){
+					foreach ($anulaciones as $row_a){
+						$mensaje  = "Nota de la anulación: ".$row_a->nota."<br>";
 						$mensaje .= "Fecha de la anulación: ".date('d-m-Y', strtotime($row_a->fecha))."<br>";
 					}
 					
@@ -172,3 +188,52 @@
 </div>
 </body>
 </html>
+
+
+
+<!-- Modal Interes -->
+
+<div class="modal fade" id="interesModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<form class="form-horizontal" method="post" action="<?php echo base_url()?>index.php/ventas/detalle_presupuesto/<?php echo $id_presupuesto?>">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        			<h4 class="modal-title" id="myModalLabel">Interes</h4>
+      			</div>
+      			
+      			<div class="modal-body">
+      				<div class="form-group">
+						<label class="col-sm-2 control-label">Descripcion</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" name="descripcion_monto" placeholder="Descripcion">
+						</div>
+					</div>
+      				
+  					<div class="form-group">
+    					<label class="col-sm-2 control-label">Tipo</label>
+    					<div class="col-sm-10">
+      						<select class="form-control" name="interes_tipo" required>
+      							<option value="porcentaje">Porcentaje %</option>
+      							<option value="valor">Valor $</option>
+      						</select>
+    					</div>
+  					</div>
+  					
+					<div class="form-group">
+						<label class="col-sm-2 control-label">Interes</label>
+						<div class="col-sm-10">
+							<input type="number" class="form-control" name="interse_monto" placeholder="Interes" required>
+						</div>
+					</div>
+				</div>
+      
+				<div class="modal-footer">
+	        		<button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+	        		<button type="submit" class="btn btn-primary">Guardar</button>
+	      		</div>
+      		</form>
+		</div>
+	</div>
+</div>
+

@@ -21,6 +21,7 @@ class Ventas extends My_Controller {
 		$this->load->model('renglon_presupuesto_model');
 		$this->load->model('config_impresion_model');
 		$this->load->model('anulaciones_model');
+		$this->load->model('intereses_model');
 		
 		
 		$this->load->helper('url');
@@ -206,22 +207,64 @@ class Ventas extends My_Controller {
 	{
 		if($this->session->userdata('logged_in'))
 		{
-			$condicion = array(
-				'id_presupuesto' => $id
-			);			
+			$_presupuesto = $this->presupuestos_model->getRegistro($id);
+			if($_presupuesto){
+				if($this->input->post('interes_tipo')){
+				
+					foreach ($_presupuesto as $_row) {
+						$presupuesto_monto = $_row->monto;
+					}
+					
+					if($this->input->post('interes_tipo') == 'porcentaje'){
+						$interes_monto = $presupuesto_monto * $this->input->post('interse_monto') / 100 ;
+					}else{
+						$interes_monto = $this->input->post('interse_monto');
+					}
+					
+					if($this->input->post('descripcion_monto') == ""){
+						$descripcion = date('d-m-Y').' Intereses generados por atraso';
+					}else{
+						$descripcion = date('d-m-Y').' '.$this->input->post('descripcion_monto');
+					}
+					
+					$interes = array(
+						'id_presupuesto'	=> $id,
+						'id_tipo'			=> 1,
+						'monto'				=> $interes_monto,
+						'descripcion'		=> $descripcion,
+						'fecha'				=> date('Y-m-d H:i:s'),
+						'id_usuario'		=> 1, //agregar nombre de usuario
+					);
+						
+					$this->intereses_model->insert($interes);
+						
+					$_presupuesto = array(
+						'monto'				=> $presupuesto_monto + $interes_monto,
+					);
+						
+					$this->presupuestos_model->update($_presupuesto, $id);
+				}
 			
-			$db['texto']				= getTexto();			
-			$db['presupuestos']			= $this->presupuestos_model->getRegistro($id);
-			$db['detalle_presupuesto']	= $this->renglon_presupuesto_model->getDetalle($id);
-			$db['impresiones']			= $this->config_impresion_model->getRegistro(2);
-			$db['devoluciones']			= $this->devoluciones_model->getBusqueda($condicion);
-			$db['anulaciones']			= $this->anulaciones_model->getAnulaciones($id);
-			
-			
-			$this->load->view('head.php',$db);
-			$this->load->view('menu.php');
-			$this->load->view('presupuestos/detalle_presupuestos.php');
-			$this->load->view('footer.php');
+				$condicion = array(
+					'id_presupuesto' => $id
+				);			
+				
+				$db['texto']				= getTexto();			
+				$db['presupuestos']			= $this->presupuestos_model->getRegistro($id);
+				$db['detalle_presupuesto']	= $this->renglon_presupuesto_model->getDetalle($id);
+				$db['interes_presupuesto']	= $this->intereses_model->getInteres($id);
+				$db['impresiones']			= $this->config_impresion_model->getRegistro(2);
+				$db['devoluciones']			= $this->devoluciones_model->getBusqueda($condicion);
+				$db['anulaciones']			= $this->anulaciones_model->getAnulaciones($id);
+				
+				
+				$this->load->view('head.php',$db);
+				$this->load->view('menu.php');
+				$this->load->view('presupuestos/detalle_presupuestos.php');
+				$this->load->view('footer.php');
+			}else{
+				redirect('/','refresh');
+			}
 		}else{
 			redirect('/','refresh');
 		}
