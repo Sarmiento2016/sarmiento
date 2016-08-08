@@ -122,11 +122,12 @@ class Ventas extends My_Controller {
 			
 		$crud->order_by('id_presupuesto','desc');
 			
-		$crud->columns('id_presupuesto', 'fecha', 'monto', 'descuento','id_cliente', 'tipo', 'estado');
+		$crud->columns('id_presupuesto', 'fecha', 'monto', 'descuento','id_cliente', 'tipo', 'estado', 'id_vendedor');
 			
 		$crud->display_as('id_cliente','Cliente')
 			 ->display_as('id_presupuesto','Número')
-			 ->display_as('id_estado','Estado');
+			 ->display_as('id_estado','Estado')
+             ->display_as('id_vendedor','Vendedor');
 			 
 		$crud->set_subject('remiro');
 		/*
@@ -135,6 +136,7 @@ class Ventas extends My_Controller {
 		$crud->set_relation('id_cliente','cliente','{alias} - {nombre} {apellido}');
 		$crud->set_relation('estado','estado_presupuesto','estado');
 		$crud->set_relation('tipo','tipo','tipo');
+        $crud->set_relation('id_vendedor','vendedor','vendedor');
 			
 		$_COOKIE['tabla']='remito';
 		$_COOKIE['id']='id_remito';	

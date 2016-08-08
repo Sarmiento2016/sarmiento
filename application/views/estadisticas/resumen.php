@@ -404,7 +404,13 @@ $acuenta_total	= 0;
 								<div class="small-box bg-light-blue">
                                 <div class="inner">
                                     <h4>
-                                       <?php echo "$ ".round($devolucion_a_cuenta,2)?>
+                                       <?php 
+                                       if(isset($devolucion_a_cuenta)){
+                                            echo "$ ".round($devolucion_a_cuenta,2);    
+                                       } else {
+                                            echo "$ 0";
+                                       }
+                                       ?>
                                     </h4>
                                 </div>
                                 <a href="#" class="small-box-footer">
@@ -417,7 +423,13 @@ $acuenta_total	= 0;
 								<div class="small-box bg-yellow">
                                 <div class="inner">
                                     <h4>
-                                       <?php echo "$ ".round($devolucion_total-$devolucion_a_cuenta,2)?>
+                                       <?php 
+                                       if(isset($devolucion_total) && isset($devolucion_a_cuenta)){
+                                            echo "$ ".round($devolucion_total-$devolucion_a_cuenta,2);    
+                                       } else {
+                                            echo "$ 0";
+                                       }
+                                       ?>
                                     </h4>
                                 </div>
                                 <a href="#" class="small-box-footer">
@@ -431,7 +443,13 @@ $acuenta_total	= 0;
 								<div class="small-box bg-red">
                                 <div class="inner">
                                     <h4>
-                                       <?php echo "$ ".round($anulacion_total,2)?>
+                                       <?php
+                                       if(isset($anulacion_total)){
+                                            echo "$ ".round($anulacion_total,2);    
+                                       } else {
+                                            echo "$ 0";
+                                       }
+                                       ?>
                                     </h4>
                                 </div>
                                 <a href="#" class="small-box-footer">
