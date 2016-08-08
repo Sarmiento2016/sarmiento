@@ -31,32 +31,42 @@ $cant_contado = 0;
 $cant_devoluciones = 0;
 $cant_anulaciones = 0;
 
+function getMes ($mes_fecha){
+    if($mes_fecha == '01'){ return 1; }
+    if($mes_fecha == '02'){ return 2; }
+    if($mes_fecha == '03'){ return 3; }
+    if($mes_fecha == '04'){ return 4; }
+    if($mes_fecha == '05'){ return 5; }
+    if($mes_fecha == '06'){ return 6; }
+    if($mes_fecha == '07'){ return 7; }
+    if($mes_fecha == '08'){ return 8; }
+    if($mes_fecha == '09'){ return 9; }
+    if($mes_fecha == '10'){ return 10; }
+    if($mes_fecha == '11'){ return 11; }
+    if($mes_fecha == '12'){ return 12; }
+}
+
 if($presupuestos)
 {
 	foreach ($presupuestos as $row) 
 	{
 		$mes_fecha = date('d', strtotime($row->fecha));
-		
-		if($mes_fecha == '01'){ $mes_fecha = 1; }
-		if($mes_fecha == '02'){ $mes_fecha = 2; }
-		if($mes_fecha == '03'){ $mes_fecha = 3; }
-		if($mes_fecha == '04'){ $mes_fecha = 4; }
-		if($mes_fecha == '05'){ $mes_fecha = 5; }
-		if($mes_fecha == '06'){ $mes_fecha = 6; }
-		if($mes_fecha == '07'){ $mes_fecha = 7; }
-		if($mes_fecha == '08'){ $mes_fecha = 8; }
-		if($mes_fecha == '09'){ $mes_fecha = 9; }
+		$mes_fecha = getMes($mes_fecha);
 		
 		$mes[$mes_fecha] = $mes[$mes_fecha] + $row->monto;
 		if($row->tipo == 2)
 		{
             $ctacte[$mes_fecha] = $ctacte[$mes_fecha] + $row->monto;
-            $_vendedores_ctacte[$row->id_vendedor][$mes_fecha] = $_vendedores_ctacte[$row->id_vendedor][$mes_fecha] + $row->monto;
+            if($row->id_vendedor > 0){
+                $_vendedores_ctacte[$row->id_vendedor][$mes_fecha] = $_vendedores_ctacte[$row->id_vendedor][$mes_fecha] + $row->monto;
+            }
 			$cant_ctacte = $cant_ctacte + 1; 
         } else 
         {
 			$contado[$mes_fecha] = $contado[$mes_fecha] + $row->monto;
-            $_vendedores_contado[$row->id_vendedor][$mes_fecha] = $_vendedores_contado[$row->id_vendedor][$mes_fecha] + $row->monto;
+            if($row->id_vendedor > 0){
+                $_vendedores_contado[$row->id_vendedor][$mes_fecha] = $_vendedores_contado[$row->id_vendedor][$mes_fecha] + $row->monto;
+            }
 			$cant_contado = $cant_contado + 1;
 		}
 	}	
@@ -67,16 +77,7 @@ if($remitos)
 	foreach ($remitos as $row)
 	{
 		$mes_fecha = date('d', strtotime($row->fecha));
-		
-		if($mes_fecha == '01'){ $mes_fecha = 1; }
-		if($mes_fecha == '02'){ $mes_fecha = 2; }
-		if($mes_fecha == '03'){ $mes_fecha = 3; }
-		if($mes_fecha == '04'){ $mes_fecha = 4; }
-		if($mes_fecha == '05'){ $mes_fecha = 5; }
-		if($mes_fecha == '06'){ $mes_fecha = 6; }
-		if($mes_fecha == '07'){ $mes_fecha = 7; }
-		if($mes_fecha == '08'){ $mes_fecha = 8; }
-		if($mes_fecha == '09'){ $mes_fecha = 9; }
+		$mes_fecha = getMes($mes_fecha);
 		
 		$remito[$mes_fecha] = $remito[$mes_fecha] + $row->monto;
 	}		
@@ -87,16 +88,7 @@ if($devoluciones)
 	foreach ($devoluciones as $row)
 	{
 		$mes_fecha = date('d', strtotime($row->fecha));
-		
-		if($mes_fecha == '01'){ $mes_fecha = 1; }
-		if($mes_fecha == '02'){ $mes_fecha = 2; }
-		if($mes_fecha == '03'){ $mes_fecha = 3; }
-		if($mes_fecha == '04'){ $mes_fecha = 4; }
-		if($mes_fecha == '05'){ $mes_fecha = 5; }
-		if($mes_fecha == '06'){ $mes_fecha = 6; }
-		if($mes_fecha == '07'){ $mes_fecha = 7; }
-		if($mes_fecha == '08'){ $mes_fecha = 8; }
-		if($mes_fecha == '09'){ $mes_fecha = 9; }
+		$mes_fecha = getMes($mes_fecha);
 		
 		$devolucion[$mes_fecha] = $devolucion[$mes_fecha] + $row->monto;
 		
@@ -109,16 +101,7 @@ if($anulaciones)
 	foreach ($anulaciones as $row)
 	{
 		$mes_fecha = date('d', strtotime($row->fecha));
-		
-		if($mes_fecha == '01'){ $mes_fecha = 1; }
-		if($mes_fecha == '02'){ $mes_fecha = 2; }
-		if($mes_fecha == '03'){ $mes_fecha = 3; }
-		if($mes_fecha == '04'){ $mes_fecha = 4; }
-		if($mes_fecha == '05'){ $mes_fecha = 5; }
-		if($mes_fecha == '06'){ $mes_fecha = 6; }
-		if($mes_fecha == '07'){ $mes_fecha = 7; }
-		if($mes_fecha == '08'){ $mes_fecha = 8; }
-		if($mes_fecha == '09'){ $mes_fecha = 9; }
+		$mes_fecha = getMes($mes_fecha);
 		
 		$anulacion[$mes_fecha] = $anulacion[$mes_fecha] + $row->monto;
 		
@@ -274,7 +257,8 @@ if($anulaciones)
 	</div>
 
 
- <?php
+            <?php
+            /*
             $cadena_contado = "";
             $cadena_ctacte = "";
             if($vendedores){
@@ -300,6 +284,7 @@ if($anulaciones)
             
             echo $cadena_contado;   
             echo $cadena_ctacte;   
+            */
             ?>
 
 <script type="text/javascript">
