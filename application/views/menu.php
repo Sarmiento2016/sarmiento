@@ -57,6 +57,7 @@
             	<li><a  href='<?php echo site_url('ventas/presupuesto_abm')?>'>Ver presupuestos</a></li>
             	<li><a  href='<?php echo site_url('ventas/remitos_abm')?>'>Ver remitos</a></li>
             	<li><a  href='<?php echo site_url('devoluciones/devoluciones_abm')?>'>Ver devoluciones</a></li>
+            	<li><a  href='<?php echo site_url('ventas/vendedores_abm')?>'>Vendedores</a></li>
           	</ul>
         </li>
         

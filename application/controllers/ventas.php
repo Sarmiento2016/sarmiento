@@ -303,6 +303,7 @@ class Ventas extends My_Controller {
         $crud->required_fields('vendedor','vendedor');
          
         $crud->set_relation('id_estado','estado','estado');
+        $crud->add_action('Estadistica', '', '','icon-awstats', array($this, 'detalle_vendedor'));
             
         $_COOKIE['tabla']='vendedor';
         $_COOKIE['id']='id_vendedor'; 
@@ -310,6 +311,10 @@ class Ventas extends My_Controller {
         $output = $crud->render();
 
         $this->_example_output($output);
+    }
+    
+    function detalle_vendedor($id){
+        return site_url('/estadisticas/mensual').'/'.$id; 
     }
 
 }

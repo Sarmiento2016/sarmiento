@@ -101,47 +101,48 @@ class Estadisticas extends CI_Controller
 ---------------------------------------------------------------------------------*/
     
 	
-	function mensual()
+	function mensual($id_vendedor = NULL)
 	{
-		if($this->session->userdata('logged_in')){
+	    if($this->session->userdata('logged_in')){
 		
 			$db['texto']	= getTexto();
 			
-			if($this->input->post('mes'))
-			{
+			if($this->input->post('mes')) {
 				$ano	= $this->input->post('ano');
 				$mes	= $this->input->post('mes');
-			}
-			else
-			{
+			} else {
 				$ano	= date('Y');
 				$mes	= date('m');
 			}
+            
 			$inicio	= date('01-'.$mes.'-'.$ano);
 			
 			$db['mes_actual']	= $mes;
 			$db['ano_actual']	= $ano;
 			
-			if($mes == 12)
-			{
+			if($mes == 12) {
 				$mes = 1;
 				$ano = $ano + 1;
-			}
-			else
-			{
-					$mes = $mes + 1;
-				
+			} else {
+				$mes = $mes + 1;
 			}
 			$final	= date('01-'.$mes.'-'.$ano);
 			
-			$db['presupuestos']	= $this->presupuestos_model->suma_presupuesto($inicio, $final);
 			$db['remitos']		= $this->remitos_model->suma_remito($inicio, $final);
 			$db['devoluciones']	= $this->devoluciones_model->suma_devolucion($inicio, $final);
 			$db['anulaciones']	= $this->anulaciones_model->suma_anulacion($inicio, $final);
 			$db['articulos']	= $this->presupuestos_model->get_top($inicio, $final);
 			$db['inicio']		= $inicio;
 			$db['fin']			= $final;
-            $db['vendedores']   = $this->vendedores_model->getRegistros();
+            if($id_vendedor != NULL){
+                $db['id_vendedor']  = $id_vendedor;    
+                $db['vendedor']  = $this->vendedores_model->getRegistros();
+                $db['presupuestos'] = $this->presupuestos_model->suma_presupuesto($inicio, $final, NULL, $id_vendedor);
+            } else {
+                $db['id_vendedor']  = FALSE;  
+                $db['vendedor']     = FALSE;  
+                $db['presupuestos'] = $this->presupuestos_model->suma_presupuesto($inicio, $final);
+            }
 			
 			$this->load->view('head.php', $db);
 			$this->load->view('menu.php');

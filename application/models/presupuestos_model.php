@@ -12,10 +12,26 @@ class Presupuestos_model extends MY_Model {
 
 	}
 	
-	function suma_presupuesto($inicio, $final, $id_cliente = NULL)
+	function suma_presupuesto($inicio, $final, $id_cliente = NULL, $id_vendedor = NULL)
 	{
-		if($id_cliente === NULL)
-		{
+        if($id_vendedor != NULL){
+            $inicio         = date('Y-m', strtotime($inicio));
+            $final          = date('Y-m', strtotime($final));
+        
+            $consulta = "
+            SELECT 
+                monto,
+                fecha, 
+                tipo,
+                estado,
+                id_vendedor 
+            FROM 
+                `presupuesto` 
+            WHERE
+                DATE_FORMAT(fecha, '%Y-%m') >= '$inicio' AND
+                DATE_FORMAT(fecha, '%Y-%m') < '$final' AND
+                id_vendedor = '$id_vendedor'";
+		}else  if($id_cliente == NULL) {
 			$inicio			= date('Y-m', strtotime($inicio));
 			$final			= date('Y-m', strtotime($final));
 		
@@ -62,7 +78,7 @@ class Presupuestos_model extends MY_Model {
             ORDER BY 
                 fecha";
 		}
-		
+	
 		$query = $this->db->query($consulta);
 		
 		if($query->num_rows() > 0){

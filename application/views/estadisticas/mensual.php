@@ -1,15 +1,6 @@
 <?php
 $dias_mes = 31;
 
-$_vendedores = array();
-
-if($vendedores){
-    foreach ($vendedores as $row_vendedor) {
-        $_vendedores_contado[$row_vendedor->id_vendedor] = $row_vendedor->vendedor; 
-        $_vendedores_ctacte[$row_vendedor->id_vendedor] = $row_vendedor->vendedor; 
-    }
-}
-
 for ($i=1; $i <= $dias_mes; $i++) { 
 	$mes[$i]		= 0;
 	$contado[$i]	= 0;
@@ -17,13 +8,6 @@ for ($i=1; $i <= $dias_mes; $i++) {
 	$remito[$i]		= 0;
 	$devolucion[$i]	= 0;
 	$anulacion[$i]	= 0;
-    
-    foreach ($_vendedores_contado as $v_key => $v_value) {
-        $_vendedores_contado[$v_key][$i] = 0;
-    }
-    foreach ($_vendedores_ctacte as $v_key => $v_value) {
-        $_vendedores_ctacte[$v_key][$i] = 0;
-    }
 }
 
 $cant_ctacte = 0;
@@ -57,17 +41,11 @@ if($presupuestos)
 		if($row->tipo == 2)
 		{
             $ctacte[$mes_fecha] = $ctacte[$mes_fecha] + $row->monto;
-            if($row->id_vendedor > 0){
-                $_vendedores_ctacte[$row->id_vendedor][$mes_fecha] = $_vendedores_ctacte[$row->id_vendedor][$mes_fecha] + $row->monto;
-            }
-			$cant_ctacte = $cant_ctacte + 1; 
+            $cant_ctacte = $cant_ctacte + 1; 
         } else 
         {
 			$contado[$mes_fecha] = $contado[$mes_fecha] + $row->monto;
-            if($row->id_vendedor > 0){
-                $_vendedores_contado[$row->id_vendedor][$mes_fecha] = $_vendedores_contado[$row->id_vendedor][$mes_fecha] + $row->monto;
-            }
-			$cant_contado = $cant_contado + 1;
+            $cant_contado = $cant_contado + 1;
 		}
 	}	
 }
@@ -111,6 +89,28 @@ if($anulaciones)
 
 ?>
 <div class="container">
+    
+    <?php if($vendedor){ ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-primary">
+                <div class="panel-body">
+                    <p class="pull-right">VENDEDOR: 
+                    <?php 
+                    foreach ($vendedor as $row_vendedor) {
+                        if($row_vendedor->id_vendedor == $id_vendedor){
+                            echo '<b>'.$row_vendedor->vendedor.'</b>';    
+                        }
+                    }
+                    ?>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>        
+    
+    <?php } ?>        
+
 	
 	<div class="row">
 		<div class="col-md-12">
@@ -125,7 +125,9 @@ if($anulaciones)
 			</div>
 		</div>
 	</div>
-
+	
+    <?php if(!$id_vendedor){ ?>
+        
 	<div class="row">
 		<div class="col-md-6">
 			<div class="panel panel-primary">
@@ -138,6 +140,7 @@ if($anulaciones)
 				</div>
 			</div>
 		</div>
+		
 		
 		<div class="col-md-6">
 			<div class="panel panel-primary">
@@ -178,7 +181,9 @@ if($anulaciones)
 			</div>
 		</div>
 	</div>		
-				
+	
+    <?php } ?>
+    
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-primary">
@@ -193,6 +198,8 @@ if($anulaciones)
 		</div>
 	</div>
 	
+	<?php if(!$id_vendedor){ ?>
+	
 	<div class="row">
 		<div class="col-md-12">
 			<div class="panel panel-danger">
@@ -206,6 +213,8 @@ if($anulaciones)
 			</div>
 		</div>
 	</div>
+	
+    <?php } ?>
 	
 	<div class="row">
 		<div class="col-md-12">
@@ -252,41 +261,11 @@ if($anulaciones)
 			</div>
 		</div>
 	</div>
-
-
+    
+   
+     
 	</div>
-
-
-            <?php
-            /*
-            $cadena_contado = "";
-            $cadena_ctacte = "";
-            if($vendedores){
-                foreach ($vendedores as $row_vendedor) {
-                    $cadena_contado .= " { name: '".$row_vendedor->vendedor."',";
-                    $cadena_contado .= "data: [";   
-                    
-                    $cadena_ctacte .= " { name: '".$row_vendedor->vendedor."',";
-                    $cadena_ctacte .= "data: [";    
-                    
-                    foreach ($mes as $key => $value) {
-                        $cadena_contado .= $_vendedores_contado[$row_vendedor->id_vendedor][$key].",";
-                        $cadena_ctacte  .= $_vendedores_ctacte[$row_vendedor->id_vendedor][$key].",";
-                    }   
-                    
-                    $cadena_contado .= "]";  
-                    $cadena_contado .= "},"; 
-                    
-                    $cadena_ctacte .= "]";  
-                    $cadena_ctacte .= "},";     
-                }
-            } 
-            
-            echo $cadena_contado;   
-            echo $cadena_ctacte;   
-            */
-            ?>
-
+	
 <script type="text/javascript">
 $(function () {
     $('#grafico').highcharts({
@@ -404,8 +383,9 @@ $(function () {
 		            }
 					?>
 				]
-			},
-			{
+			}
+			<?php if(!$id_vendedor){ ?>
+			,{
 	            name: 'Remito',
 	            data: [
 		            <?php 
@@ -416,6 +396,7 @@ $(function () {
 					?>
 				]
 			}
+			<?php } ?>
 		]
     });
     
