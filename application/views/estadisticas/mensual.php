@@ -1,14 +1,29 @@
 <?php
 $dias_mes = 31;
 
-for ($i=1; $i <= $dias_mes; $i++) 
-{ 
+$_vendedores = array();
+
+if($vendedores){
+    foreach ($vendedores as $row_vendedor) {
+        $_vendedores_contado[$row_vendedor->id_vendedor] = $row_vendedor->vendedor; 
+        $_vendedores_ctacte[$row_vendedor->id_vendedor] = $row_vendedor->vendedor; 
+    }
+}
+
+for ($i=1; $i <= $dias_mes; $i++) { 
 	$mes[$i]		= 0;
 	$contado[$i]	= 0;
 	$ctacte[$i]		= 0;
 	$remito[$i]		= 0;
 	$devolucion[$i]	= 0;
 	$anulacion[$i]	= 0;
+    
+    foreach ($_vendedores_contado as $v_key => $v_value) {
+        $_vendedores_contado[$v_key][$i] = 0;
+    }
+    foreach ($_vendedores_ctacte as $v_key => $v_value) {
+        $_vendedores_ctacte[$v_key][$i] = 0;
+    }
 }
 
 $cant_ctacte = 0;
@@ -18,7 +33,7 @@ $cant_anulaciones = 0;
 
 if($presupuestos)
 {
-	foreach ($presupuestos as $row)
+	foreach ($presupuestos as $row) 
 	{
 		$mes_fecha = date('d', strtotime($row->fecha));
 		
@@ -33,16 +48,17 @@ if($presupuestos)
 		if($mes_fecha == '09'){ $mes_fecha = 9; }
 		
 		$mes[$mes_fecha] = $mes[$mes_fecha] + $row->monto;
-			if($row->tipo == 2)
-			{
-				$ctacte[$mes_fecha] = $ctacte[$mes_fecha] + $row->monto;
-				$cant_ctacte = $cant_ctacte + 1; 
-			} 
-			else
-			{
-				$contado[$mes_fecha] = $contado[$mes_fecha] + $row->monto;
-				$cant_contado = $cant_contado + 1;
-			}
+		if($row->tipo == 2)
+		{
+            $ctacte[$mes_fecha] = $ctacte[$mes_fecha] + $row->monto;
+            $_vendedores_ctacte[$row->id_vendedor][$mes_fecha] = $_vendedores_ctacte[$row->id_vendedor][$mes_fecha] + $row->monto;
+			$cant_ctacte = $cant_ctacte + 1; 
+        } else 
+        {
+			$contado[$mes_fecha] = $contado[$mes_fecha] + $row->monto;
+            $_vendedores_contado[$row->id_vendedor][$mes_fecha] = $_vendedores_contado[$row->id_vendedor][$mes_fecha] + $row->monto;
+			$cant_contado = $cant_contado + 1;
+		}
 	}	
 }
 
@@ -258,6 +274,34 @@ if($anulaciones)
 	</div>
 
 
+ <?php
+            $cadena_contado = "";
+            $cadena_ctacte = "";
+            if($vendedores){
+                foreach ($vendedores as $row_vendedor) {
+                    $cadena_contado .= " { name: '".$row_vendedor->vendedor."',";
+                    $cadena_contado .= "data: [";   
+                    
+                    $cadena_ctacte .= " { name: '".$row_vendedor->vendedor."',";
+                    $cadena_ctacte .= "data: [";    
+                    
+                    foreach ($mes as $key => $value) {
+                        $cadena_contado .= $_vendedores_contado[$row_vendedor->id_vendedor][$key].",";
+                        $cadena_ctacte  .= $_vendedores_ctacte[$row_vendedor->id_vendedor][$key].",";
+                    }   
+                    
+                    $cadena_contado .= "]";  
+                    $cadena_contado .= "},"; 
+                    
+                    $cadena_ctacte .= "]";  
+                    $cadena_ctacte .= "},";     
+                }
+            } 
+            
+            echo $cadena_contado;   
+            echo $cadena_ctacte;   
+            ?>
+
 <script type="text/javascript">
 $(function () {
     $('#grafico').highcharts({
@@ -303,7 +347,7 @@ $(function () {
             <?php 
             foreach ($mes as $key => $value)
 			{
-				echo   $value.",";
+				echo $value.",";
             }
 			?>
 			]

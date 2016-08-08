@@ -1,20 +1,20 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 session_start(); //we need to call PHP's session object to access it through CI
-class Estadisticas extends CI_Controller {
-
+class Estadisticas extends CI_Controller 
+{
 	function __construct()
 	{
 		parent::__construct();
 	   	
-			$this->load->model('presupuestos_model');  
-			$this->load->model('remitos_model');  
-			$this->load->model('devoluciones_model');
-			$this->load->model('anulaciones_model');
+        $this->load->model('presupuestos_model');  
+		$this->load->model('remitos_model');  
+		$this->load->model('devoluciones_model');
+        $this->load->model('anulaciones_model');
+        $this->load->model('vendedores_model');
 			
-			$this->load->database();
-			$this->load->library('grocery_CRUD');  
-			$this->load->helper('url');
-		
+        $this->load->database();
+		$this->load->library('grocery_CRUD');  
+		$this->load->helper('url');
 	}
 
 
@@ -29,25 +29,22 @@ class Estadisticas extends CI_Controller {
     
 	function verMas()
 	{
-		if($this->session->userdata('logged_in')){
-		
-		$query = $this->db->query("SELECT cantidad FROM config WHERE id_config = 1 ");
-		
-		if($query->num_rows() > 0)
-		{
-			foreach ($query->result() as $fila)
-			{
-				$cantidad = $fila->cantidad;
-			}
-		}	
-			
-		$db['articulos']	= $this->presupuestos_model->get_top($this->input->post('inicio'), $this->input->post('fin'), $cantidad);
-		
-		$this->load->view('head.php', $db);
-		$this->load->view('menu.php');
-		$this->load->view('get_top_cien.php');
-		$this->load->view('footer.php');
-		}else{
+		if($this->session->userdata('logged_in')) {
+			$query = $this->db->query("SELECT cantidad FROM config WHERE id_config = 1 ");
+    		
+    		if($query->num_rows() > 0) {
+    			foreach ($query->result() as $fila) {
+    				$cantidad = $fila->cantidad;
+    			}
+    		}	
+    			
+    		$db['articulos']	= $this->presupuestos_model->get_top($this->input->post('inicio'), $this->input->post('fin'), $cantidad);
+    		
+    		$this->load->view('head.php', $db);
+    		$this->load->view('menu.php');
+    		$this->load->view('get_top_cien.php');
+    		$this->load->view('footer.php');
+		} else {
 			redirect('/','refresh');
 		}
 	}
@@ -66,14 +63,13 @@ class Estadisticas extends CI_Controller {
 	{
 		if($this->session->userdata('logged_in')){
 			$db['texto']	= getTexto();
-			if($this->input->post('ano'))
-			{
+			
+			if($this->input->post('ano')) {
 				$ano	= $this->input->post('ano');
-			}
-			else
-			{
+			} else {
 				$ano	= date('Y');
 			}
+            
 			$db['ano_actual']	= $ano;
 			
 			$inicio	= date('01-01-'.$ano);
@@ -85,6 +81,7 @@ class Estadisticas extends CI_Controller {
 			$db['devoluciones']	= $this->devoluciones_model->suma_devolucion($inicio, $final);
 			$db['anulaciones']	= $this->anulaciones_model->suma_anulacion($inicio, $final);
 			$db['articulos']	= $this->presupuestos_model->get_top($inicio, $final);
+            $db['vendedores']   = $this->vendedores_model->getRegistros();
 			$this->load->view('head.php', $db);
 			$this->load->view('menu.php');
 			$this->load->view('estadisticas/anual.php');
@@ -144,6 +141,7 @@ class Estadisticas extends CI_Controller {
 			$db['articulos']	= $this->presupuestos_model->get_top($inicio, $final);
 			$db['inicio']		= $inicio;
 			$db['fin']			= $final;
+            $db['vendedores']   = $this->vendedores_model->getRegistros();
 			
 			$this->load->view('head.php', $db);
 			$this->load->view('menu.php');

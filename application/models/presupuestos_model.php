@@ -19,43 +19,48 @@ class Presupuestos_model extends MY_Model {
 			$inicio			= date('Y-m', strtotime($inicio));
 			$final			= date('Y-m', strtotime($final));
 		
-			$consulta = "SELECT 
-					monto,
-					fecha, 
-					tipo,
-					estado 
-					FROM `presupuesto` 
-					WHERE
-					DATE_FORMAT(fecha, '%Y-%m') >= '$inicio' AND
-					DATE_FORMAT(fecha, '%Y-%m') < '$final'";
-		}
-		else
-		{
+			$consulta = "
+			SELECT 
+				monto,
+				fecha, 
+				tipo,
+				estado,
+				id_vendedor 
+			FROM 
+                `presupuesto` 
+            WHERE
+                DATE_FORMAT(fecha, '%Y-%m') >= '$inicio' AND
+				DATE_FORMAT(fecha, '%Y-%m') < '$final'";
+		} else {
 			$inicio			= date('Y-m-d', strtotime($inicio));
 			$final			= date('Y-m-d', strtotime($final));
 		
-			$consulta = "SELECT 
-					id_presupuesto,
-					monto,
-					fecha, 
-					tipo.tipo as tipo,
-					a_cuenta,
-					nombre,
-					apellido,
-					alias,
-					cliente.id_cliente as id_cliente,
-					estado_presupuesto.estado as estado 
-					FROM `presupuesto` 
-					INNER JOIN 
-					cliente ON(presupuesto.id_cliente = cliente.id_cliente)
-					INNER JOIN 
-					tipo ON(presupuesto.tipo = tipo.id_tipo)
-					INNER JOIN 
-					estado_presupuesto ON(estado_presupuesto.id_estado = presupuesto.estado)
-					WHERE
-					DATE_FORMAT(fecha, '%Y-%m-%d') >= '$inicio' AND
-					DATE_FORMAT(fecha, '%Y-%m-%d') < '$final'
-					ORDER BY fecha";
+			$consulta = "
+			SELECT 
+                id_presupuesto,
+				monto,
+				fecha, 
+				tipo.tipo as tipo,
+				a_cuenta,
+				nombre,
+				apellido,
+				alias,
+				id_vendedor
+				cliente.id_cliente as id_cliente,
+				estado_presupuesto.estado as estado 
+			FROM 
+                `presupuesto` 
+            INNER JOIN 
+			     cliente ON(presupuesto.id_cliente = cliente.id_cliente)
+            INNER JOIN 
+                tipo ON(presupuesto.tipo = tipo.id_tipo)
+            INNER JOIN 
+                estado_presupuesto ON(estado_presupuesto.id_estado = presupuesto.estado)
+            WHERE
+                DATE_FORMAT(fecha, '%Y-%m-%d') >= '$inicio' AND
+                DATE_FORMAT(fecha, '%Y-%m-%d') < '$final'
+            ORDER BY 
+                fecha";
 		}
 		
 		$query = $this->db->query($consulta);
