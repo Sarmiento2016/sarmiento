@@ -288,7 +288,7 @@ class Ventas extends My_Controller {
     {
         $crud = new grocery_CRUD();
 
-        $crud->set_table('vendedor');
+        $crud->set_table('vendedores');
              
         $crud->columns('id_vendedor','vendedor', 'id_estado');
             

@@ -14,7 +14,7 @@ class Presupuestos_model extends MY_Model {
 	
 	function suma_presupuesto($inicio, $final, $id_cliente = NULL, $id_vendedor = NULL)
 	{
-        if($id_vendedor != NULL){
+		if($id_vendedor != NULL){
             $inicio         = date('Y-m', strtotime($inicio));
             $final          = date('Y-m', strtotime($final));
         
@@ -31,7 +31,7 @@ class Presupuestos_model extends MY_Model {
                 DATE_FORMAT(fecha, '%Y-%m') >= '$inicio' AND
                 DATE_FORMAT(fecha, '%Y-%m') < '$final' AND
                 id_vendedor = '$id_vendedor'";
-		}else  if($id_cliente == NULL) {
+		}else  if($id_cliente === NULL) {
 			$inicio			= date('Y-m', strtotime($inicio));
 			$final			= date('Y-m', strtotime($final));
 		
@@ -47,7 +47,7 @@ class Presupuestos_model extends MY_Model {
             WHERE
                 DATE_FORMAT(fecha, '%Y-%m') >= '$inicio' AND
 				DATE_FORMAT(fecha, '%Y-%m') < '$final'";
-		} else {
+		}else if($id_cliente == '0') {
 			$inicio			= date('Y-m-d', strtotime($inicio));
 			$final			= date('Y-m-d', strtotime($final));
 		
@@ -61,7 +61,35 @@ class Presupuestos_model extends MY_Model {
 				nombre,
 				apellido,
 				alias,
-				id_vendedor
+				id_vendedor,
+				cliente.id_cliente as id_cliente,
+				estado_presupuesto.estado as estado 
+			FROM 
+                `presupuesto` 
+            INNER JOIN 
+			     cliente ON(presupuesto.id_cliente = cliente.id_cliente)
+            INNER JOIN 
+                tipo ON(presupuesto.tipo = tipo.id_tipo)
+            INNER JOIN 
+                estado_presupuesto ON(estado_presupuesto.id_estado = presupuesto.estado)
+            WHERE
+                DATE_FORMAT(fecha, '%Y-%m-%d') >= '$inicio' AND
+				DATE_FORMAT(fecha, '%Y-%m-%d') < '$final'";
+		}else {
+			$inicio			= date('Y-m-d', strtotime($inicio));
+			$final			= date('Y-m-d', strtotime($final));
+		
+			$consulta = "
+			SELECT 
+                id_presupuesto,
+				monto,
+				fecha, 
+				tipo.tipo as tipo,
+				a_cuenta,
+				nombre,
+				apellido,
+				alias,
+				id_vendedor,
 				cliente.id_cliente as id_cliente,
 				estado_presupuesto.estado as estado 
 			FROM 
@@ -78,7 +106,7 @@ class Presupuestos_model extends MY_Model {
             ORDER BY 
                 fecha";
 		}
-	
+		
 		$query = $this->db->query($consulta);
 		
 		if($query->num_rows() > 0){

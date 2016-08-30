@@ -37,14 +37,28 @@ if($presupuestos)
 		$mes_fecha = date('d', strtotime($row->fecha));
 		$mes_fecha = getMes($mes_fecha);
 		
-		$mes[$mes_fecha] = $mes[$mes_fecha] + $row->monto;
+		if(isset($mes[$mes_fecha])){
+			$mes[$mes_fecha] = $mes[$mes_fecha] + $row->monto;
+		}else{
+			$mes[$mes_fecha] = $row->monto;
+		}
+		
 		if($row->tipo == 2)
 		{
-            $ctacte[$mes_fecha] = $ctacte[$mes_fecha] + $row->monto;
-            $cant_ctacte = $cant_ctacte + 1; 
+			if(isset($ctacte[$mes_fecha])){
+				$ctacte[$mes_fecha] = $ctacte[$mes_fecha] + $row->monto;
+			}else{
+				$ctacte[$mes_fecha] = $row->monto;
+			}	
+				
+			$cant_ctacte = $cant_ctacte + 1; 
         } else 
         {
-			$contado[$mes_fecha] = $contado[$mes_fecha] + $row->monto;
+			if(isset($contado[$mes_fecha])){
+				$contado[$mes_fecha] = $contado[$mes_fecha] + $row->monto;
+			}else{
+				$contado[$mes_fecha] = $row->monto;
+			}
             $cant_contado = $cant_contado + 1;
 		}
 	}	
@@ -57,7 +71,11 @@ if($remitos)
 		$mes_fecha = date('d', strtotime($row->fecha));
 		$mes_fecha = getMes($mes_fecha);
 		
-		$remito[$mes_fecha] = $remito[$mes_fecha] + $row->monto;
+		if(isset($remito[$mes_fecha])){
+			$remito[$mes_fecha] = $remito[$mes_fecha] + $row->monto;
+		}else{
+			$remito[$mes_fecha] = $row->monto;
+		}
 	}		
 }
 
@@ -68,7 +86,11 @@ if($devoluciones)
 		$mes_fecha = date('d', strtotime($row->fecha));
 		$mes_fecha = getMes($mes_fecha);
 		
-		$devolucion[$mes_fecha] = $devolucion[$mes_fecha] + $row->monto;
+		if(isset($devolucion[$mes_fecha])){
+			$devolucion[$mes_fecha] = $devolucion[$mes_fecha] + $row->monto;
+		}else{
+			$devolucion[$mes_fecha] = $row->monto;
+		}
 		
 		$cant_devoluciones = $cant_devoluciones + 1;
 	}		
@@ -81,8 +103,12 @@ if($anulaciones)
 		$mes_fecha = date('d', strtotime($row->fecha));
 		$mes_fecha = getMes($mes_fecha);
 		
-		$anulacion[$mes_fecha] = $anulacion[$mes_fecha] + $row->monto;
-		
+		if(isset($anulacion[$mes_fecha])){
+			$anulacion[$mes_fecha] = $anulacion[$mes_fecha] + $row->monto;
+		}else{
+			$anulacion[$mes_fecha] = $row->monto;
+		}
+				
 		$cant_anulaciones = $cant_anulaciones + 1;
 	}		
 }
