@@ -94,6 +94,14 @@ function fin_presupuesto()
 	atipo		= $("input[name='tipo']:checked").val(); 
 	dto			= parseFloat($('#descuento').val());
 	vendedor	= $('#vendedor').val();
+	comentario	= $("#comentario").val();
+	if ($('#com_publico').prop('checked')) {
+    	com_publico	= 1;
+	}else
+	{
+		com_publico	= 0;
+	}
+	
 	
 	if(atipo == 1) { // contado
 		aestado = 2;// cancelado
@@ -113,7 +121,9 @@ function fin_presupuesto()
 			cantidades:cantidad_r,
 			precios:precio_r,
 			desc:dto, 
-			vendedor:vendedor
+			vendedor:vendedor,
+			comentario:comentario,
+			com_publico:com_publico
 		}
     }).done( function( data ) {
 		// console.log(data);

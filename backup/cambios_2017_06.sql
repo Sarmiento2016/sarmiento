@@ -1,0 +1,1 @@
+ALTER TABLE `presupuesto` ADD `comentario` TEXT NOT NULL AFTER `a_cuenta`, ADD `com_publico` TINYINT NOT NULL AFTER `comentario`;

@@ -113,7 +113,7 @@
 					foreach ($presupuestos as $presupuesto) 
 					{
 						echo "<div class='row'>";	
-							echo "<div class='col-sm-2'>".$presupuesto->id_presupuesto."</div>";
+							echo "<div class='col-sm-2'><a href='".base_url()."index.php/ventas/detalle_presupuesto/".$presupuesto->id_presupuesto."/1' class='btn btn-default btn-xs' title='ver presupuesto' target='_blank'>".$presupuesto->id_presupuesto."</a></div>";
 							echo "<div class='col-sm-3'>".date('d-m-Y', strtotime($presupuesto->fecha))."</div>";
 							echo "<div class='col-sm-2'>".$presupuesto->monto."</div>";
 							echo "<div class='col-sm-2'>".$presupuesto->a_cuenta."</div>";

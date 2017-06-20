@@ -88,8 +88,8 @@
 					echo "<th>".$texto['articulo']."</th>";
 					echo "<th>Descripción</th>";
 					echo "<th>".$texto['cantidad']."</th>";
-					echo "<th>".$texto['monto']."</th>";
-					echo "<th>".$texto['total']."</th>";
+					echo "<th>".round($texto['monto'], 2)."</th>";
+					echo "<th>".round($texto['total'], 2)."</th>";
 				echo "</tr>";
 				
 				if($detalle_presupuesto)
@@ -104,7 +104,7 @@
 							} else {
 								$precio = 0;
 							}
-							echo "<td>".$precio."</td>";
+							echo "<td>$ ".round($precio, 2)."</td>";
 							$sub_total = $row_detalle->cantidad * $precio;
 							$total = $total + $sub_total;
 							echo "<td>$ ".round($sub_total,2)."</td>";
@@ -143,16 +143,32 @@
 					echo setMensaje($mensaje, 'warning');
 				}
 				
-				
+				if($row->comentario != '')
+				{
+					if($row->com_publico == 1)
+					{
+						echo '<div class="well">Comentario: '.$row->comentario."</div></div>";
+					}else
+					{
+						echo '</div><div class="well">Comentario Privado: '.$row->comentario."</div>";
+					}					
+				}else
+				{
+					echo '</div>';
+				}
 			}
 			else
 			{
 				echo setMensaje($texto['no_registro'], 'success');
+				echo '</div>';
 			}
-			?>
-			</div>
-			<input type='button' class='btn btn-default' value='Volver a la lista' onclick='window.history.back()'>
-			<?php 
+			
+			
+			if(!$llamada)
+			{
+				echo "<input type='button' class='btn btn-default' value='Volver a la lista' onclick='window.history.back()'>";
+			}
+		
   			if($row->estado != 3)
   			{
   			?>
@@ -161,27 +177,32 @@
 	  			</button>
 	  			<?php 
 	  			
-	  			// Presupuesto pendiente de pago
-	  			if($row->tipo == 2){
-	  			?>
-	  			<a href="<?php echo base_url().'index.php/devoluciones/generar/'.$id_presupuesto?>" class="btn btn-default"/>
-	  				<i class="fa fa-thumbs-down"></i> Devolución
-	  			</a>
-	  			
-	  			<a href="<?php echo base_url().'index.php/ventas/interes/'.$id_presupuesto?>" class="btn btn-default" data-toggle="modal" data-target="#interesModal"/>
-	  				<i class="fa fa-angle-up"></i> Interes
-	  			</a>
-	  			<?php
-	  			}
-
-				// Presupuesto pagado
-	  			if($row->tipo == 1) {
-	  			?>
-	  				<a href="<?php echo base_url().'index.php/presupuestos/anular/'.$id_presupuesto?>" class="btn btn-default"/>
-	  					<i class="fa fa-trash-o"></i> Anular
-	  				</a>
-	  			<?php
-	  			}
+	  			if(!$llamada)
+	  			{
+	  				// Presupuesto pendiente de pago
+		  			if($row->tipo == 2)
+		  			{
+		  			?>
+		  			<a href="<?php echo base_url().'index.php/devoluciones/generar/'.$id_presupuesto?>" class="btn btn-default"/>
+		  				<i class="fa fa-thumbs-down"></i> Devolución
+		  			</a>
+		  			
+		  			<a href="<?php echo base_url().'index.php/ventas/interes/'.$id_presupuesto?>" class="btn btn-default" data-toggle="modal" data-target="#interesModal"/>
+		  				<i class="fa fa-angle-up"></i> Interes
+		  			</a>
+		  			<?php
+		  			}
+	
+					// Presupuesto pagado
+		  			if($row->tipo == 1) 
+		  			{
+		  			?>
+		  				<a href="<?php echo base_url().'index.php/presupuestos/anular/'.$id_presupuesto?>" class="btn btn-default"/>
+		  					<i class="fa fa-trash-o"></i> Anular
+		  				</a>
+		  			<?php
+		  			}
+				}
 			} else {
 				if($anulaciones){
 					foreach ($anulaciones as $row_a){

@@ -206,7 +206,7 @@ class Ventas extends My_Controller {
  **********************************************************************************/
 
 
-	function detalle_presupuesto($id)
+	function detalle_presupuesto($id, $llamada = NULL)
 	{
 		if($this->session->userdata('logged_in'))
 		{
@@ -260,11 +260,20 @@ class Ventas extends My_Controller {
 				$db['devoluciones']			= $this->devoluciones_model->getBusqueda($condicion);
 				$db['anulaciones']			= $this->anulaciones_model->getAnulaciones($id);
 				
+				if($llamada == NULL)
+				{
+					$db['llamada'] = FALSE;
+					$this->load->view('head.php',$db);
+					$this->load->view('menu.php');
+					$this->load->view('presupuestos/detalle_presupuestos.php');
+					$this->load->view('footer.php');
+				}else
+				{
+					$db['llamada'] = TRUE;
+					$this->load->view('head.php',$db);
+					$this->load->view('presupuestos/detalle_presupuestos.php');
+				}
 				
-				$this->load->view('head.php',$db);
-				$this->load->view('menu.php');
-				$this->load->view('presupuestos/detalle_presupuestos.php');
-				$this->load->view('footer.php');
 			}else{
 				redirect('/','refresh');
 			}
