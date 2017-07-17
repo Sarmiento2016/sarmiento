@@ -112,8 +112,21 @@
 				{
 					foreach ($presupuestos as $presupuesto) 
 					{
-						echo "<div class='row'>";	
-							echo "<div class='col-sm-2'><a href='".base_url()."index.php/ventas/detalle_presupuesto/".$presupuesto->id_presupuesto."/1' class='btn btn-default btn-xs' title='ver presupuesto' target='_blank'>".$presupuesto->id_presupuesto."</a></div>";
+							if($presupuesto->comentario != '')
+							{
+								if($presupuesto->com_publico == 1)
+								{
+									$link_presupuesto = "<div class='col-sm-2'><a href='".base_url()."index.php/ventas/detalle_presupuesto/".$presupuesto->id_presupuesto."/1' class='btn btn-default btn-xs' title='Ver presupuesto - Comentario Publico' target='_blank'>".$presupuesto->id_presupuesto." <i class='fa fa-comment-o'></i> </a></div>";
+								}else
+								{
+									$link_presupuesto = "<div class='col-sm-2'><a href='".base_url()."index.php/ventas/detalle_presupuesto/".$presupuesto->id_presupuesto."/1' class='btn btn-default btn-xs' title='Ver presupuesto - Comentario Privado' target='_blank'>".$presupuesto->id_presupuesto." <i class='fa fa-comment'></i></a></div>";
+								}
+							}else
+							{
+								$link_presupuesto = "<div class='col-sm-2'><a href='".base_url()."index.php/ventas/detalle_presupuesto/".$presupuesto->id_presupuesto."/1' class='btn btn-default btn-xs' title='ver presupuesto' target='_blank'>".$presupuesto->id_presupuesto."</a></div>";
+							}
+							echo "<div class='row'>";	
+							echo $link_presupuesto;
 							echo "<div class='col-sm-3'>".date('d-m-Y', strtotime($presupuesto->fecha))."</div>";
 							echo "<div class='col-sm-2'>".$presupuesto->monto."</div>";
 							echo "<div class='col-sm-2'>".$presupuesto->a_cuenta."</div>";
