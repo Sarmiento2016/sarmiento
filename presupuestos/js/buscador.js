@@ -8,7 +8,7 @@ var px_unitario;
 var porc_iva_art;
 var nuevo			= true;
 $("#cantidad").attr('disabled','disabled');
-$("#quickfind").focus();
+$("#vendedor").focus();
 $('#carga_presupuesto').hide();
 $('#cancela_presupuesto').hide();
 
